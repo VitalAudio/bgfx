@@ -385,7 +385,7 @@ namespace bgfx
 			scdFlags |= false
 				|| _scd.swapEffect == DXGI_SWAP_EFFECT_FLIP_SEQUENTIAL
 				|| _scd.swapEffect == DXGI_SWAP_EFFECT_FLIP_DISCARD
-				? 0 // DXGI_SWAP_CHAIN_FLAG_FRAME_LATENCY_WAITABLE_OBJECT
+				? DXGI_SWAP_CHAIN_FLAG_FRAME_LATENCY_WAITABLE_OBJECT
 				: 0
 				;
 
@@ -730,7 +730,7 @@ namespace bgfx
 			scdFlags |= false
 				|| _scd.swapEffect == DXGI_SWAP_EFFECT_FLIP_SEQUENTIAL
 				|| _scd.swapEffect == DXGI_SWAP_EFFECT_FLIP_DISCARD
-				? 0 // DXGI_SWAP_CHAIN_FLAG_FRAME_LATENCY_WAITABLE_OBJECT
+				? DXGI_SWAP_CHAIN_FLAG_FRAME_LATENCY_WAITABLE_OBJECT
 				: 0
 				;
 
