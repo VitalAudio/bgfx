@@ -3184,6 +3184,10 @@ namespace bgfx { namespace mtl
 		{
 			m_metalLayer.displaySyncEnabled = 0 != (_flags&BGFX_RESET_VSYNC);
 		}
+		if (@available(macOS 10.13.2, *))
+		{
+			m_metalLayer.maximumDrawableCount = 2;
+		}
 #endif // __MAC_OS_X_VERSION_MAX_ALLOWED >= 101300
 #endif // BX_PLATFORM_OSX
 
@@ -3269,7 +3273,6 @@ namespace bgfx { namespace mtl
 	{
 		if (NULL == m_drawableTexture)
 		{
-			[m_metalLayer nextDrawable];
 			m_drawable = m_metalLayer.nextDrawable;
 			if (m_drawable != NULL)
 			{
