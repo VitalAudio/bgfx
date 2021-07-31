@@ -3136,7 +3136,10 @@ namespace bgfx { namespace mtl
 						}
 					};
 
-					if ([NSThread isMainThread])
+					if (NULL != contentView.layer && [contentView.layer isKindOfClass:[CAMetalLayer class]]) {
+						m_metalLayer = (CAMetalLayer*)contentView.layer;
+					}
+					else if ([NSThread isMainThread])
 					{
 						setLayer();
 					}

@@ -363,6 +363,16 @@ namespace bgfx
 
 	static const GUID IID_ID3D12CommandQueue = { 0x0ec870a6, 0x5d7e, 0x4c22, { 0x8c, 0xfc, 0x5b, 0xaa, 0xe0, 0x76, 0x16, 0xed } };
 
+	void Dxgi::setMaxFrameLatency(IUnknown* _device, int latency) {
+		IDXGIDevice1* dxgiDevice1;
+		_device->QueryInterface(IID_IDXGIDevice1, (void**)&dxgiDevice1);
+		if (NULL != dxgiDevice1)
+		{
+			dxgiDevice1->SetMaximumFrameLatency(latency);
+			DX_RELEASE_I(dxgiDevice1);
+		}
+	}
+
 	HRESULT Dxgi::createSwapChain(IUnknown* _device, const SwapChainDesc& _scd, SwapChainI** _swapChain)
 	{
 		HRESULT hr = S_OK;
@@ -385,7 +395,7 @@ namespace bgfx
 			scdFlags |= false
 				|| _scd.swapEffect == DXGI_SWAP_EFFECT_FLIP_SEQUENTIAL
 				|| _scd.swapEffect == DXGI_SWAP_EFFECT_FLIP_DISCARD
-				? 0 // DXGI_SWAP_CHAIN_FLAG_FRAME_LATENCY_WAITABLE_OBJECT
+				? DXGI_SWAP_CHAIN_FLAG_FRAME_LATENCY_WAITABLE_OBJECT
 				: 0
 				;
 
@@ -730,7 +740,7 @@ namespace bgfx
 			scdFlags |= false
 				|| _scd.swapEffect == DXGI_SWAP_EFFECT_FLIP_SEQUENTIAL
 				|| _scd.swapEffect == DXGI_SWAP_EFFECT_FLIP_DISCARD
-				? 0 // DXGI_SWAP_CHAIN_FLAG_FRAME_LATENCY_WAITABLE_OBJECT
+				? DXGI_SWAP_CHAIN_FLAG_FRAME_LATENCY_WAITABLE_OBJECT
 				: 0
 				;
 
