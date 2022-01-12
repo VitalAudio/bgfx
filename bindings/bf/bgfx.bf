@@ -604,7 +604,7 @@ public static class bgfx
 		Text                   = 0x00000008,
 	
 		/// <summary>
-		/// Enable profiler.
+		/// Enable profiler. This causes per-view statistics to be collected, available through `bgfx::Stats::ViewStats`. This is unrelated to the profiler functions in `bgfx::CallbackI`.
 		/// </summary>
 		Profiler               = 0x00000010,
 	}
@@ -1270,6 +1270,11 @@ public static class bgfx
 		Amd                    = 0x1002,
 	
 		/// <summary>
+		/// Apple adapter.
+		/// </summary>
+		Apple                  = 0x106b,
+	
+		/// <summary>
 		/// Intel adapter.
 		/// </summary>
 		Intel                  = 0x8086,
@@ -1278,6 +1283,11 @@ public static class bgfx
 		/// nVidia adapter.
 		/// </summary>
 		Nvidia                 = 0x10de,
+	
+		/// <summary>
+		/// Microsoft adapter.
+		/// </summary>
+		Microsoft              = 0x1414,
 	}
 	
 	[AllowDuplicates]
@@ -1333,6 +1343,11 @@ public static class bgfx
 		/// No rendering.
 		/// </summary>
 		Noop,
+	
+		/// <summary>
+		/// AGC
+		/// </summary>
+		Agc,
 	
 		/// <summary>
 		/// Direct3D 9.0

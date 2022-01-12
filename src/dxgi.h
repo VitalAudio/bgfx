@@ -102,6 +102,9 @@ namespace bgfx
 		void trim();
 
 		///
+		bool tearingSupported() const;
+
+		///
 		void* m_dxgiDll;
 		void* m_dxgiDebugDll;
 
@@ -110,6 +113,7 @@ namespace bgfx
 		FactoryI* m_factory;
 		AdapterI* m_adapter;
 		OutputI*  m_output;
+		bool m_tearingSupported;
 	};
 
 } // namespace bgfx

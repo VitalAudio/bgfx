@@ -211,7 +211,7 @@ enum uint BGFX_DEBUG_WIREFRAME = 0x00000001; /// Enable wireframe for all primit
 enum uint BGFX_DEBUG_IFH = 0x00000002;
 enum uint BGFX_DEBUG_STATS = 0x00000004; /// Enable statistics display.
 enum uint BGFX_DEBUG_TEXT = 0x00000008; /// Enable debug text display.
-enum uint BGFX_DEBUG_PROFILER = 0x00000010; /// Enable profiler.
+enum uint BGFX_DEBUG_PROFILER = 0x00000010; /// Enable profiler. This causes per-view statistics to be collected, available through `bgfx::Stats::ViewStats`. This is unrelated to the profiler functions in `bgfx::CallbackI`.
 
 enum ushort BGFX_BUFFER_COMPUTE_FORMAT_8X1 = 0x0001; /// 1 8-bit value
 enum ushort BGFX_BUFFER_COMPUTE_FORMAT_8X2 = 0x0002; /// 2 8-bit values
@@ -401,8 +401,10 @@ enum ubyte BGFX_RESOLVE_AUTO_GEN_MIPS = 0x01; /// Auto-generate mip maps on reso
 enum ushort BGFX_PCI_ID_NONE = 0x0000; /// Autoselect adapter.
 enum ushort BGFX_PCI_ID_SOFTWARE_RASTERIZER = 0x0001; /// Software rasterizer.
 enum ushort BGFX_PCI_ID_AMD = 0x1002; /// AMD adapter.
+enum ushort BGFX_PCI_ID_APPLE = 0x106b; /// Apple adapter.
 enum ushort BGFX_PCI_ID_INTEL = 0x8086; /// Intel adapter.
 enum ushort BGFX_PCI_ID_NVIDIA = 0x10de; /// nVidia adapter.
+enum ushort BGFX_PCI_ID_MICROSOFT = 0x1414; /// Microsoft adapter.
 
 enum ubyte BGFX_CUBE_MAP_POSITIVE_X = 0x00; /// Cubemap +x.
 enum ubyte BGFX_CUBE_MAP_NEGATIVE_X = 0x01; /// Cubemap -x.
@@ -427,6 +429,7 @@ enum bgfx_fatal_t
 enum bgfx_renderer_type_t
 {
 	BGFX_RENDERER_TYPE_NOOP, /// No rendering.
+	BGFX_RENDERER_TYPE_AGC, /// AGC
 	BGFX_RENDERER_TYPE_DIRECT3D9, /// Direct3D 9.0
 	BGFX_RENDERER_TYPE_DIRECT3D11, /// Direct3D 11.0
 	BGFX_RENDERER_TYPE_DIRECT3D12, /// Direct3D 12.0
