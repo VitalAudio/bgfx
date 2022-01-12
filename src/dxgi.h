@@ -85,6 +85,8 @@ namespace bgfx
 		///
 		HRESULT createSwapChain(IUnknown* _device, const SwapChainDesc& _scd, SwapChainI** _swapChain);
 
+		void setMaxFrameLatency(IUnknown* _device, int latency);
+
 #if BX_PLATFORM_WINRT
 		///
 		HRESULT removeSwapChain(const SwapChainDesc& _scd, SwapChainI** _swapChain);

@@ -1912,6 +1912,7 @@ namespace bgfx { namespace d3d11
 			uint16_t denseIdx = m_numWindows++;
 			m_windows[denseIdx] = _handle;
 			m_frameBuffers[_handle.idx].create(denseIdx, _nwh, _width, _height, _format, _depthFormat);
+			m_dxgi.setMaxFrameLatency(m_device, m_numWindows);
 		}
 
 		void destroyFrameBuffer(FrameBufferHandle _handle) override
@@ -1930,6 +1931,7 @@ namespace bgfx { namespace d3d11
 						m_frameBuffers[handle.idx].m_denseIdx = denseIdx;
 					}
 				}
+				m_dxgi.setMaxFrameLatency(m_device, m_numWindows);
 			}
 		}
 
