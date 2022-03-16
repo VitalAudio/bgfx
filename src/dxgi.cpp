@@ -330,6 +330,7 @@ namespace bgfx
 				: (uint16_t)m_adapterDesc.VendorId
 				;
 			_caps.deviceId = (uint16_t)m_adapterDesc.DeviceId;
+			_caps.deviceName = m_adapterDesc.Description;
 		}
 
 		return true;

@@ -603,6 +603,8 @@ namespace bgfx { namespace d3d9
 					: (uint16_t)m_identifier.VendorId
 					;
 				g_caps.deviceId = (uint16_t)m_identifier.DeviceId;
+				std::string tmp = m_identifier.Description;
+				g_caps.deviceName = std::wstring(tmp.begin(), tmp.end());
 
 				uint32_t behaviorFlags[] =
 				{

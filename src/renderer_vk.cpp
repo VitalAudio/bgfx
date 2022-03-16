@@ -1438,6 +1438,8 @@ VK_IMPORT_INSTANCE
 				vkGetPhysicalDeviceProperties(m_physicalDevice, &m_deviceProperties);
 				g_caps.vendorId = uint16_t(m_deviceProperties.vendorID);
 				g_caps.deviceId = uint16_t(m_deviceProperties.deviceID);
+				std::string tmp = m_deviceProperties.deviceName;
+				g_caps.deviceName = std::wstring(tmp.begin(), tmp.end());
 
 				BX_TRACE("Using physical device %d: %s", physicalDeviceIdx, m_deviceProperties.deviceName);
 

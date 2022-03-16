@@ -11,6 +11,7 @@
 #include <stdlib.h> // NULL
 
 #include "defines.h"
+#include <string>
 
 ///
 #define BGFX_HANDLE(_name)                                                           \
@@ -740,6 +741,7 @@ namespace bgfx
 
 		uint16_t vendorId;         //!< Selected GPU vendor PCI id.
 		uint16_t deviceId;         //!< Selected GPU device id.
+		std::wstring deviceName;
 		bool     homogeneousDepth; //!< True when NDC depth is in [-1, 1] range, otherwise its [0, 1].
 		bool     originBottomLeft; //!< True when NDC origin is at bottom left.
 		uint8_t  numGPUs;          //!< Number of enumerated GPUs.
