@@ -185,6 +185,17 @@ namespace bgfx
 		if (NULL != m_factory)
 		{
 			AdapterI* adapter;
+			int dedicated_index = -1;
+			for (uint32_t ii = 0
+				 ; DXGI_ERROR_NOT_FOUND != m_factory->EnumAdapters(ii, reinterpret_cast<IDXGIAdapter**>(&adapter)) && ii < BX_COUNTOF(_caps.gpu)
+				 ; ++ii
+				 ) {
+				DXGI_ADAPTER_DESC desc;
+				hr = adapter->GetDesc(&desc);
+				if (SUCCEEDED(hr) && dedicated_index < 0 && desc.DedicatedVideoMemory)
+					dedicated_index = ii;
+			}
+
 			for (uint32_t ii = 0
 				; DXGI_ERROR_NOT_FOUND != m_factory->EnumAdapters(ii, reinterpret_cast<IDXGIAdapter**>(&adapter) ) && ii < BX_COUNTOF(_caps.gpu)
 				; ++ii
@@ -230,7 +241,8 @@ namespace bgfx
 						{
 							if ( (BGFX_PCI_ID_NONE != _caps.vendorId ||             0 != _caps.deviceId)
 							&&   (BGFX_PCI_ID_NONE == _caps.vendorId || desc.VendorId == _caps.vendorId)
-							&&   (               0 == _caps.deviceId || desc.DeviceId == _caps.deviceId) )
+							&&   (               0 == _caps.deviceId || desc.DeviceId == _caps.deviceId)
+							&&   (             -1 == dedicated_index ||            ii == dedicated_index) )
 							{
 								m_adapter = adapter;
 								m_adapter->AddRef();
