@@ -185,17 +185,6 @@ namespace bgfx
 		if (NULL != m_factory)
 		{
 			AdapterI* adapter;
-			int dedicated_index = -1;
-			for (uint32_t ii = 0
-				 ; DXGI_ERROR_NOT_FOUND != m_factory->EnumAdapters(ii, reinterpret_cast<IDXGIAdapter**>(&adapter)) && ii < BX_COUNTOF(_caps.gpu)
-				 ; ++ii
-				 ) {
-				DXGI_ADAPTER_DESC desc;
-				hr = adapter->GetDesc(&desc);
-				if (SUCCEEDED(hr) && dedicated_index < 0 && desc.DedicatedVideoMemory)
-					dedicated_index = ii;
-			}
-
 			for (uint32_t ii = 0
 				; DXGI_ERROR_NOT_FOUND != m_factory->EnumAdapters(ii, reinterpret_cast<IDXGIAdapter**>(&adapter) ) && ii < BX_COUNTOF(_caps.gpu)
 				; ++ii
@@ -241,8 +230,7 @@ namespace bgfx
 						{
 							if ( (BGFX_PCI_ID_NONE != _caps.vendorId ||             0 != _caps.deviceId)
 							&&   (BGFX_PCI_ID_NONE == _caps.vendorId || desc.VendorId == _caps.vendorId)
-							&&   (               0 == _caps.deviceId || desc.DeviceId == _caps.deviceId)
-							&&   (             -1 == dedicated_index ||            ii == dedicated_index) )
+							&&   (               0 == _caps.deviceId || desc.DeviceId == _caps.deviceId) )
 							{
 								m_adapter = adapter;
 								m_adapter->AddRef();
@@ -326,7 +314,20 @@ namespace bgfx
 
 			if (NULL == m_adapter)
 			{
-				hr = m_factory->EnumAdapters(0, reinterpret_cast<IDXGIAdapter**>(&m_adapter) );
+				int dedicated_index = 0;
+				SIZE_T dedicated_memory = 0;
+				for (uint32_t ii = 0
+					 ; DXGI_ERROR_NOT_FOUND != m_factory->EnumAdapters(ii, reinterpret_cast<IDXGIAdapter**>(&adapter)) && ii < BX_COUNTOF(_caps.gpu)
+					 ; ++ii
+					 ) {
+					DXGI_ADAPTER_DESC desc;
+					hr = adapter->GetDesc(&desc);
+					if (SUCCEEDED(hr) && desc.DedicatedVideoMemory > dedicated_memory) {
+						dedicated_index = ii;
+						dedicated_memory = desc.DedicatedVideoMemory;
+					}
+				}
+				hr = m_factory->EnumAdapters(dedicated_index, reinterpret_cast<IDXGIAdapter**>(&m_adapter));
 				BX_WARN(SUCCEEDED(hr), "EnumAdapters failed 0x%08x.", hr);
 				m_driverType = D3D_DRIVER_TYPE_UNKNOWN;
 			}
