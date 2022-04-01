@@ -6667,6 +6667,7 @@ namespace bgfx { namespace gl
 	void FrameBufferGL::create(uint8_t _num, const Attachment* _attachment)
 	{
 		GL_CHECK(glGenFramebuffers(1, &m_fbo[0]) );
+		s_renderGL->m_glctx.makeCurrent(NULL);
 
 		m_denseIdx = UINT16_MAX;
 		m_numTh = _num;
