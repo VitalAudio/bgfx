@@ -817,7 +817,6 @@ namespace bgfx { namespace d3d12
 					D3D_FEATURE_LEVEL_12_1,
 					D3D_FEATURE_LEVEL_12_0,
 					D3D_FEATURE_LEVEL_11_1,
-					D3D_FEATURE_LEVEL_11_0,
 				};
 
 				hr = E_FAIL;
