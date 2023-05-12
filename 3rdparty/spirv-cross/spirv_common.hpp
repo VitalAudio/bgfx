@@ -24,7 +24,11 @@
 #ifndef SPIRV_CROSS_COMMON_HPP
 #define SPIRV_CROSS_COMMON_HPP
 
+#ifndef SPV_ENABLE_UTILITY_CODE
+#define SPV_ENABLE_UTILITY_CODE
+#endif
 #include "spirv.hpp"
+
 #include "spirv_cross_containers.hpp"
 #include "spirv_cross_error_handling.hpp"
 #include <functional>
@@ -638,7 +642,10 @@ struct SPIRExtension : IVariant
 		SPV_AMD_shader_ballot,
 		SPV_AMD_shader_explicit_vertex_parameter,
 		SPV_AMD_shader_trinary_minmax,
-		SPV_AMD_gcn_shader
+		SPV_AMD_gcn_shader,
+		NonSemanticDebugPrintf,
+		NonSemanticShaderDebugInfo,
+		NonSemanticGeneric
 	};
 
 	explicit SPIRExtension(Extension ext_)
@@ -677,6 +684,7 @@ struct SPIREntryPoint
 	} workgroup_size;
 	uint32_t invocations = 0;
 	uint32_t output_vertices = 0;
+	uint32_t output_primitives = 0;
 	spv::ExecutionModel model = spv::ExecutionModelMax;
 	bool geometry_passthrough = false;
 };
@@ -690,7 +698,7 @@ struct SPIRExpression : IVariant
 
 	// Only created by the backend target to avoid creating tons of temporaries.
 	SPIRExpression(std::string expr, TypeID expression_type_, bool immutable_)
-	    : expression(move(expr))
+	    : expression(std::move(expr))
 	    , expression_type(expression_type_)
 	    , immutable(immutable_)
 	{
@@ -771,7 +779,8 @@ struct SPIRBlock : IVariant
 		Unreachable, // Noop
 		Kill, // Discard
 		IgnoreIntersection, // Ray Tracing
-		TerminateRay // Ray Tracing
+		TerminateRay, // Ray Tracing
+		EmitMeshTasks // Mesh shaders
 	};
 
 	enum Merge
@@ -832,6 +841,13 @@ struct SPIRBlock : IVariant
 	BlockID true_block = 0;
 	BlockID false_block = 0;
 	BlockID default_block = 0;
+
+	// If terminator is EmitMeshTasksEXT.
+	struct
+	{
+		ID groups[3];
+		ID payload;
+	} mesh = {};
 
 	SmallVector<Instruction> ops;
 
@@ -1072,7 +1088,6 @@ struct SPIRVariable : IVariant
 
 	// Temporaries which can remain forwarded as long as this variable is not modified.
 	SmallVector<ID> dependees;
-	bool forwardable = true;
 
 	bool deferred_declaration = false;
 	bool phi_variable = false;
@@ -1564,6 +1579,7 @@ struct AccessChainMeta
 	bool storage_is_packed = false;
 	bool storage_is_invariant = false;
 	bool flattened_struct = false;
+	bool relaxed_precision = false;
 };
 
 enum ExtendedDecorations
@@ -1630,6 +1646,12 @@ enum ExtendedDecorations
 	// must be applied to the result, since pull-model interpolants in MSL cannot be swizzled directly, but the
 	// results of interpolation can.
 	SPIRVCrossDecorationInterpolantComponentExpr,
+
+	// Apply to any struct type that is used in the Workgroup storage class.
+	// This causes matrices in MSL prior to Metal 3.0 to be emitted using a special
+	// class that is convertible to the standard matrix type, to work around the
+	// lack of constructors in the 'threadgroup' address space.
+	SPIRVCrossDecorationWorkgroupStruct,
 
 	SPIRVCrossDecorationCount
 };
@@ -1769,6 +1791,33 @@ static inline bool opcode_is_sign_invariant(spv::Op opcode)
 	case spv::OpBitwiseOr:
 	case spv::OpBitwiseXor:
 	case spv::OpBitwiseAnd:
+		return true;
+
+	default:
+		return false;
+	}
+}
+
+static inline bool opcode_can_promote_integer_implicitly(spv::Op opcode)
+{
+	switch (opcode)
+	{
+	case spv::OpSNegate:
+	case spv::OpNot:
+	case spv::OpBitwiseAnd:
+	case spv::OpBitwiseOr:
+	case spv::OpBitwiseXor:
+	case spv::OpShiftLeftLogical:
+	case spv::OpShiftRightLogical:
+	case spv::OpShiftRightArithmetic:
+	case spv::OpIAdd:
+	case spv::OpISub:
+	case spv::OpIMul:
+	case spv::OpSDiv:
+	case spv::OpUDiv:
+	case spv::OpSRem:
+	case spv::OpUMod:
+	case spv::OpSMod:
 		return true;
 
 	default:

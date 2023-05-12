@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-2014 Dario Manesku. All rights reserved.
- * License: https://github.com/bkaradzic/bgfx#license-bsd-2-clause
+ * License: https://github.com/bkaradzic/bgfx/blob/master/LICENSE
  */
 
 #include <string>
@@ -548,7 +548,7 @@ void submit(bgfx::ViewId _id, bgfx::ProgramHandle _handle, int32_t _depth = 0)
 {
 	bgfx::submit(_id, _handle, _depth);
 
-	// Keep track of submited view ids.
+	// Keep track of submitted view ids.
 	s_viewMask |= 1 << _id;
 }
 
@@ -764,6 +764,10 @@ struct Group
 		m_numEdges = 0;
 		m_edges = NULL;
 		m_edgePlanesUnalignedPtr = NULL;
+		m_edgePlanes = NULL;
+		m_aabb={};
+		m_sphere={};
+		m_obb={};
 		m_prims.clear();
 	}
 
@@ -1780,6 +1784,8 @@ public:
 		bgfx::Init init;
 		init.type     = args.m_type;
 		init.vendorId = args.m_pciId;
+		init.platformData.nwh  = entry::getNativeWindowHandle(entry::kDefaultWindowHandle);
+		init.platformData.ndt  = entry::getNativeDisplayHandle();
 		init.resolution.width  = m_viewState.m_width;
 		init.resolution.height = m_viewState.m_height;
 		init.resolution.reset  = m_reset;

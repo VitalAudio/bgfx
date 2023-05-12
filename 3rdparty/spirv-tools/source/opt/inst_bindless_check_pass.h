@@ -110,10 +110,14 @@ class InstBindlessCheckPass : public InstrumentPass {
       UptrVectorIterator<BasicBlock> ref_block_itr, uint32_t stage_idx,
       std::vector<std::unique_ptr<BasicBlock>>* new_blocks);
 
+  void SetupInputBufferIds();
+  uint32_t GenDebugReadLengthFunctionId();
+
   // Generate instructions into |builder| to read length of runtime descriptor
   // array |var_id| from debug input buffer and return id of value.
   uint32_t GenDebugReadLength(uint32_t var_id, InstructionBuilder* builder);
 
+  uint32_t GenDebugReadInitFunctionId();
   // Generate instructions into |builder| to read initialization status of
   // descriptor array |image_id| at |index_id| from debug input buffer and
   // return id of value.
@@ -124,14 +128,16 @@ class InstBindlessCheckPass : public InstrumentPass {
   // AnalyzeDescriptorReference. It is necessary and sufficient for further
   // analysis and regeneration of the reference.
   typedef struct RefAnalysis {
-    uint32_t desc_load_id;
-    uint32_t image_id;
-    uint32_t load_id;
-    uint32_t ptr_id;
-    uint32_t var_id;
-    uint32_t desc_idx_id;
-    uint32_t strg_class;
-    Instruction* ref_inst;
+    uint32_t desc_load_id{0};
+    uint32_t image_id{0};
+    uint32_t load_id{0};
+    uint32_t ptr_id{0};
+    uint32_t var_id{0};
+    uint32_t set{0};
+    uint32_t binding{0};
+    uint32_t desc_idx_id{0};
+    uint32_t strg_class{0};
+    Instruction* ref_inst{nullptr};
   } RefAnalysis;
 
   // Return size of type |ty_id| in bytes. Use |matrix_stride| and |col_major|
@@ -147,11 +153,11 @@ class InstBindlessCheckPass : public InstrumentPass {
   uint32_t GenLastByteIdx(RefAnalysis* ref, InstructionBuilder* builder);
 
   // Clone original image computation starting at |image_id| into |builder|.
-  // This may generate more than one instruction if neccessary.
+  // This may generate more than one instruction if necessary.
   uint32_t CloneOriginalImage(uint32_t image_id, InstructionBuilder* builder);
 
   // Clone original original reference encapsulated by |ref| into |builder|.
-  // This may generate more than one instruction if neccessary.
+  // This may generate more than one instruction if necessary.
   uint32_t CloneOriginalReference(RefAnalysis* ref,
                                   InstructionBuilder* builder);
 
@@ -201,6 +207,13 @@ class InstBindlessCheckPass : public InstrumentPass {
 
   // Mapping from variable to binding
   std::unordered_map<uint32_t, uint32_t> var2binding_;
+
+  uint32_t read_length_func_id_{0};
+  uint32_t read_init_func_id_{0};
+  uint32_t desc_set_type_id_{0};
+  uint32_t desc_set_ptr_id_{0};
+  uint32_t input_buffer_struct_id_{0};
+  uint32_t input_buffer_ptr_id_{0};
 };
 
 }  // namespace opt

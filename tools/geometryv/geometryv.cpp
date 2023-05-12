@@ -1,6 +1,6 @@
 /*
  * Copyright 2019-2019 Attila Kocsis. All rights reserved.
- * License: https://github.com/bkaradzic/bgfx#license-bsd-2-clause
+ * License: https://github.com/bkaradzic/bgfx/blob/master/LICENSE
  */
 
 #include "common.h"
@@ -169,7 +169,7 @@ struct Camera
 {
 	Camera()
 	{
-		init(bx::init::Zero, 2.0f, 0.01f, 100.0f);
+		init(bx::InitZero, 2.0f, 0.01f, 100.0f);
 	}
 
 	void init(const bx::Vec3& _center, float _distance, float _near, float _far)
@@ -214,7 +214,7 @@ struct Camera
 	{
 		const bx::Vec3 toTarget     = bx::sub(m_target.dest, m_pos.dest);
 		const float toTargetLen     = bx::length(toTarget);
-		const float invToTargetLen  = 1.0f / (toTargetLen + bx::kFloatMin);
+		const float invToTargetLen  = 1.0f / (toTargetLen + bx::kFloatSmallest);
 		const bx::Vec3 toTargetNorm = bx::mul(toTarget, invToTargetLen);
 
 		float delta  = toTargetLen * _dz;
@@ -237,7 +237,7 @@ struct Camera
 
 		const bx::Vec3 toPos     = bx::sub(m_pos.curr, m_target.curr);
 		const float toPosLen     = bx::length(toPos);
-		const float invToPosLen  = 1.0f / (toPosLen + bx::kFloatMin);
+		const float invToPosLen  = 1.0f / (toPosLen + bx::kFloatSmallest);
 		const bx::Vec3 toPosNorm = bx::mul(toPos, invToPosLen);
 
 		float ll[2];
@@ -265,8 +265,8 @@ struct Camera
 
 	struct Interp3f
 	{
-		bx::Vec3 curr = bx::init::None;
-		bx::Vec3 dest = bx::init::None;
+		bx::Vec3 curr = bx::InitNone;
+		bx::Vec3 dest = bx::InitNone;
 	};
 
 	Interp3f m_target;
@@ -659,7 +659,7 @@ void help(const char* _error = NULL)
 	bx::printf(
 		  "geometryv, bgfx geometry viewer tool, version %d.%d.%d.\n"
 		  "Copyright 2019-2019 Attila Kocsis. All rights reserved.\n"
-		  "License: https://github.com/bkaradzic/bgfx#license-bsd-2-clause\n\n"
+		  "License: https://github.com/bkaradzic/bgfx/blob/master/LICENSE\n\n"
 		, BGFX_GEOMETRYV_VERSION_MAJOR
 		, BGFX_GEOMETRYV_VERSION_MINOR
 		, BGFX_API_VERSION
@@ -715,10 +715,12 @@ int _main_(int _argc, char** _argv)
 	View view;
 	cmdAdd("view", cmdView, &view);
 
-	entry::setWindowFlags(entry::WindowHandle{0}, ENTRY_WINDOW_FLAG_ASPECT_RATIO, false);
-	entry::setWindowSize(entry::WindowHandle{0}, view.m_width, view.m_height);
+	entry::setWindowFlags(entry::kDefaultWindowHandle, ENTRY_WINDOW_FLAG_ASPECT_RATIO, false);
+	entry::setWindowSize(entry::kDefaultWindowHandle, view.m_width, view.m_height);
 
 	bgfx::Init init;
+	init.platformData.nwh = entry::getNativeWindowHandle(entry::kDefaultWindowHandle);
+	init.platformData.ndt = entry::getNativeDisplayHandle();
 	init.resolution.width = view.m_width;
 	init.resolution.width = view.m_height;
 	init.resolution.reset = 0
@@ -1127,7 +1129,7 @@ int _main_(int _argc, char** _argv)
 				ImGui::Text(
 					"geometryv, bgfx geometry viewer tool " ICON_KI_WRENCH ", version %d.%d.%d.\n"
 					"Copyright 2019-2019 Attila Kocsis. All rights reserved.\n"
-					"License: https://github.com/bkaradzic/bgfx#license-bsd-2-clause\n"
+					"License: https://github.com/bkaradzic/bgfx/blob/master/LICENSE\n"
 					, BGFX_GEOMETRYV_VERSION_MAJOR
 					, BGFX_GEOMETRYV_VERSION_MINOR
 					, BGFX_API_VERSION
@@ -1248,8 +1250,7 @@ int _main_(int _argc, char** _argv)
 					bx::stringPrintf(title, "Failed to load %s!", filePath);
 				}
 
-				entry::WindowHandle handle = { 0 };
-				entry::setWindowTitle(handle, title.c_str() );
+				entry::setWindowTitle(entry::kDefaultWindowHandle, title.c_str() );
 			}
 
 			int64_t now = bx::getHPCounter();

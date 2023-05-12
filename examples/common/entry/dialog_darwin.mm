@@ -1,6 +1,6 @@
 /*
  * Copyright 2019-2019 Attila Kocsis. All rights reserved.
- * License: https://github.com/bkaradzic/bgfx#license-bsd-2-clause
+ * License: https://github.com/bkaradzic/bgfx/blob/master/LICENSE
  */
 
 #include "entry_p.h"
@@ -104,7 +104,7 @@ bool openFileSelectionDialog(
 
 		panel.message = [[NSString alloc] initWithBytes:_title.getPtr() length:_title.getLength() encoding:NSASCIIStringEncoding];
 		panel.directoryURL = [NSURL URLWithString:@(_inOutFilePath.getCPtr())];
-		panel.allowedFileTypes = fileTypes;
+		panel.allowedContentTypes = fileTypes;
 
 		if ([panel runModal] == NSModalResponseOK)
 		{

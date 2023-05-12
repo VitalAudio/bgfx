@@ -1,6 +1,6 @@
 /*
- * Copyright 2011-2021 Branimir Karadzic. All rights reserved.
- * License: https://github.com/bkaradzic/bgfx#license-bsd-2-clause
+ * Copyright 2011-2023 Branimir Karadzic. All rights reserved.
+ * License: https://github.com/bkaradzic/bgfx/blob/master/LICENSE
  */
 
 #ifndef ENTRY_PRIVATE_H_HEADER_GUARD
@@ -318,7 +318,7 @@ namespace entry
 
 		void release(const Event* _event) const
 		{
-			BX_DELETE(getAllocator(), const_cast<Event*>(_event) );
+			bx::deleteObject(getAllocator(), const_cast<Event*>(_event) );
 		}
 
 	private:

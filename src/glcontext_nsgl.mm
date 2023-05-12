@@ -1,6 +1,6 @@
 /*
- * Copyright 2011-2021 Branimir Karadzic. All rights reserved.
- * License: https://github.com/bkaradzic/bgfx#license-bsd-2-clause
+ * Copyright 2011-2023 Branimir Karadzic. All rights reserved.
+ * License: https://github.com/bkaradzic/bgfx/blob/master/LICENSE
  */
 
 #include "bgfx_p.h"
@@ -156,7 +156,7 @@ namespace bgfx { namespace gl
 
 	static void* s_opengl = NULL;
 
-	void GlContext::create(uint32_t _width, uint32_t _height)
+	void GlContext::create(uint32_t _width, uint32_t _height, uint32_t /*_flags*/)
 	{
 		BX_UNUSED(_width, _height);
 
@@ -238,7 +238,7 @@ namespace bgfx { namespace gl
 			GLint interval = 0;
 			[glContext setValues:&interval forParameter:NSOpenGLCPSwapInterval];
 
-			// When initializing NSOpenGLView programatically (as we are), this sometimes doesn't
+			// When initializing NSOpenGLView programmatically (as we are), this sometimes doesn't
 			// get hooked up properly (especially when there are existing window elements). This ensures
 			// we are valid. Otherwise, you'll probably get a GL_INVALID_FRAMEBUFFER_OPERATION when
 			// trying to glClear() for the first time.
@@ -333,7 +333,7 @@ namespace bgfx { namespace gl
 
 	void GlContext::destroySwapChain(SwapChainGL* _swapChain)
 	{
-		BX_DELETE(g_allocator, _swapChain);
+		bx::deleteObject(g_allocator, _swapChain);
 	}
 
 	void GlContext::swap(SwapChainGL* _swapChain)
