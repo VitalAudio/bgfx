@@ -325,6 +325,10 @@ namespace bgfx { namespace gl
 
 	SwapChainGL* GlContext::createSwapChain(void* _nwh)
 	{
+		if (NULL != glXSwapIntervalEXT) // mtytel: fix, don't let secondary windows default to vsync
+		{
+			glXSwapIntervalEXT(m_display, (::Window)_nwh, 0);
+		}
 		return BX_NEW(g_allocator, SwapChainGL)(m_display, (::Window)_nwh, m_visualInfo, m_context);
 	}
 
